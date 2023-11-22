@@ -19,6 +19,61 @@ public class SQLHelper {
     private SQLHelper() {
     }
 
+    private static Connection getConnectionMySQL() {
+        try {
+            conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/app", "app", "pass");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return conn;
+    }
+
+    public static void cleanDBMySQL() {
+        var creditRequest = "DELETE FROM credit_request_entity";
+        var order = "DELETE FROM order_entity";
+        var payment = "DELETE FROM payment_entity";
+        try (var conn = getConnectionMySQL()) {
+            runner.update(conn, creditRequest);
+            runner.update(conn, order);
+            runner.update(conn, payment);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static PaymentTableObject getPaymentEntityMySQL() {
+        var sqlRequest = "SELECT * FROM payment_entity";
+        try (var conn = getConnectionMySQL()) {
+            var requestResult = runner.query(conn, sqlRequest, new BeanHandler<>(PaymentTableObject.class));
+            return requestResult;
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        return null;
+    }
+
+    public static CreditTableObject getCreditEntityMySQL() {
+        var sqlRequest = "SELECT * FROM credit_request_entity";
+        try (var conn = getConnectionMySQL()) {
+            var requestResult = runner.query(conn, sqlRequest, new BeanHandler<>(CreditTableObject.class));
+            return requestResult;
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        return null;
+    }
+
+    public static OrderTableObject getOrderEntityMySQL() {
+        var sqlRequest = "SELECT * FROM order_entity";
+        try (var conn = getConnectionMySQL()) {
+            var requestResult = runner.query(conn, sqlRequest, new BeanHandler<>(OrderTableObject.class));
+            return requestResult;
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        return null;
+    }
+
     private static Connection getConnectionPostgeSQL() {
         try {
             conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/app", "app", "pass");
